@@ -1,0 +1,51 @@
+<section class="card">
+  <div class="fields">
+    <div class="field">
+      <label for="amount">Send</label>
+      <div class="row">
+        <input id="amount" type="number" min="0" [(ngModel)]="store.amount" />
+        <app-currency-select
+          label="Send currency"
+          [(value)]="store.base"
+          [currencies]="store.currencies()"
+        />
+      </div>
+    </div>
+
+    <app-button label="⇄" variant="secondary" [outlined]="true" (click)="store.swap()" />
+
+    <div class="field">
+      <span class="label">Receive</span>
+      <div class="row">
+        <output class="result">{{ (store.result() | number: '1.2-2') ?? '—' }}</output>
+        <app-currency-select
+          label="Receive currency"
+          [(value)]="store.quote"
+          [currencies]="store.currencies()"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="rate">
+      @if (store.rate(); as rate) {
+        1 {{ store.base() }} = {{ rate | number: '1.4-4' }} {{ store.quote() }}
+      }
+    </span>
+
+    <div class="actions">
+      <app-button
+        [label]="store.isFavorite() ? '★ Favorited' : '☆ Favorite'"
+        [outlined]="!store.isFavorite()"
+        (click)="store.toggleFavorite()"
+      />
+      <app-button
+        label="Log conversion"
+        [outlined]="true"
+        [disabled]="!store.result()"
+        (click)="store.logConversion()"
+      />
+    </div>
+  </div>
+</section>

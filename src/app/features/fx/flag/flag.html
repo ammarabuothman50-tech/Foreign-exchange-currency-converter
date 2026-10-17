@@ -1,0 +1,5 @@
+@if (missing()) {
+  <span class="fallback">{{ code().charAt(0) }}</span>
+} @else {
+  <img [src]="'flags/' + code().toLowerCase() + '.png'" alt="" (error)="missing.set(true)" />
+}

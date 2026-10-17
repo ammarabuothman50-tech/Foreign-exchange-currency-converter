@@ -1,0 +1,25 @@
+:root {
+  --bg: #0c0c0c;
+  --surface: #171717;
+  --surface-2: #1f1f1f;
+  --border: #2a2a2a;
+  --text: #f2f2f2;
+  --muted: #8c8c8c;
+  --accent: #d4f53c;
+  --up: #3ddc4a;
+  --down: #ff4d4d;
+  --font: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--bg);
+}

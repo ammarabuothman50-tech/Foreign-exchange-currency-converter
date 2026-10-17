@@ -1,0 +1,15 @@
+<p class="hint">{{ store.amount() ?? 0 | number }} {{ store.base() }} in other currencies</p>
+
+<ul class="list">
+  @for (row of rows(); track row.code) {
+    <li>
+      <button type="button" (click)="store.quote.set(row.code)">
+        <app-flag [code]="row.code" />
+        <span class="code">{{ row.code }}</span>
+        <span class="name">{{ row.name }}</span>
+        <span class="rate">{{ row.rate | number: '1.4-4' }}</span>
+        <strong>{{ row.total | number: '1.2-2' }}</strong>
+      </button>
+    </li>
+  }
+</ul>

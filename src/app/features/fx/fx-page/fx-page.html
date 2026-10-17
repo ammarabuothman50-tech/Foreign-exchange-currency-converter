@@ -1,0 +1,70 @@
+<app-ticker />
+
+<div class="page">
+  <h1>Check the rate</h1>
+  <app-converter-card />
+
+  <nav class="tabs" role="tablist">
+    <button
+      type="button"
+      role="tab"
+      [class.active]="tab() === 'history'"
+      [attr.aria-selected]="tab() === 'history'"
+      (click)="tab.set('history')"
+    >
+      History
+    </button>
+    <button
+      type="button"
+      role="tab"
+      [class.active]="tab() === 'compare'"
+      [attr.aria-selected]="tab() === 'compare'"
+      (click)="tab.set('compare')"
+    >
+      Compare
+    </button>
+    <button
+      type="button"
+      role="tab"
+      [class.active]="tab() === 'favorites'"
+      [attr.aria-selected]="tab() === 'favorites'"
+      (click)="tab.set('favorites')"
+    >
+      Favorites <span class="badge">{{ store.favorites().length }}</span>
+    </button>
+    <button
+      type="button"
+      role="tab"
+      [class.active]="tab() === 'log'"
+      [attr.aria-selected]="tab() === 'log'"
+      (click)="tab.set('log')"
+    >
+      Log <span class="badge">{{ store.log().length }}</span>
+    </button>
+  </nav>
+
+  <section role="tabpanel">
+    @switch (tab()) {
+      @case ('history') {
+        @defer {
+          <app-history-tab />
+        }
+      }
+      @case ('compare') {
+        @defer {
+          <app-compare-tab />
+        }
+      }
+      @case ('favorites') {
+        @defer {
+          <app-favorites-tab />
+        }
+      }
+      @case ('log') {
+        @defer {
+          <app-log-tab />
+        }
+      }
+    }
+  </section>
+</div>

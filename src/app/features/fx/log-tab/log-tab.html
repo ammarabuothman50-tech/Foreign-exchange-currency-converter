@@ -1,0 +1,24 @@
+@if (store.log().length) {
+  <div class="actions">
+    <app-button
+      label="Clear log"
+      variant="secondary"
+      [outlined]="true"
+      (click)="store.clearLog()"
+    />
+  </div>
+
+  <ul class="list">
+    @for (entry of store.log(); track entry.date) {
+      <li>
+        <span class="date">{{ entry.date | date: 'MMM d, HH:mm' }}</span>
+        <span>
+          {{ entry.amount | number: '1.0-2' }} {{ entry.base }} →
+          <strong>{{ entry.result | number: '1.2-2' }} {{ entry.quote }}</strong>
+        </span>
+      </li>
+    }
+  </ul>
+} @else {
+  <p class="empty">No conversions logged yet.</p>
+}

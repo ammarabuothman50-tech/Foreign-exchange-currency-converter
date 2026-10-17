@@ -1,0 +1,11 @@
+:host {
+  display: block;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  color: var(--bg);
+  background: var(--up);
+}
+
+:host(.error) {
+  background: var(--down);
+}

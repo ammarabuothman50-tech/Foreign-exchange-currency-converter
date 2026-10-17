@@ -1,0 +1,10 @@
+<header class="header">
+  <a routerLink="/" class="brand">
+    <span class="logo">/</span>
+    FX_CHECKER
+  </a>
+
+  @if (store.currencies().length) {
+    <p class="meta">{{ store.currencies().length }} currencies · EOD · ECB data</p>
+  }
+</header>

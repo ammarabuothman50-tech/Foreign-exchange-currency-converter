@@ -1,0 +1,41 @@
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  list-style: none;
+}
+
+li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+}
+
+li + li {
+  border-top: 1px solid var(--border);
+}
+
+.date {
+  color: var(--muted);
+}
+
+strong {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.empty {
+  padding: 3rem 0;
+  color: var(--muted);
+  text-align: center;
+}

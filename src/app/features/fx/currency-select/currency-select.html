@@ -1,0 +1,25 @@
+<p-select
+  [options]="currencies()"
+  optionLabel="code"
+  optionValue="code"
+  [(ngModel)]="value"
+  [filter]="true"
+  filterBy="code,name"
+  appendTo="body"
+  [ariaLabel]="label()"
+>
+  <ng-template #selectedItem let-currency>
+    <span class="option">
+      <app-flag [code]="currency.code" />
+      {{ currency.code }}
+    </span>
+  </ng-template>
+
+  <ng-template #item let-currency>
+    <span class="option">
+      <app-flag [code]="currency.code" />
+      {{ currency.code }}
+      <small>{{ currency.name }}</small>
+    </span>
+  </ng-template>
+</p-select>

@@ -1,0 +1,25 @@
+<div class="y-axis">
+  <span>{{ chart().max | number: '1.4-4' }}</span>
+  <span>{{ chart().mid | number: '1.4-4' }}</span>
+  <span>{{ chart().min | number: '1.4-4' }}</span>
+</div>
+
+<svg viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="area-fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" class="fill-top" />
+      <stop offset="1" class="fill-bottom" />
+    </linearGradient>
+  </defs>
+  <line x1="0" y1="1" x2="1000" y2="1" class="grid" />
+  <line x1="0" y1="150" x2="1000" y2="150" class="grid" />
+  <line x1="0" y1="299" x2="1000" y2="299" class="grid" />
+  <path [attr.d]="chart().area" fill="url(#area-fill)" />
+  <path [attr.d]="chart().line" class="line" />
+</svg>
+
+<div class="x-axis">
+  @for (date of chart().dates; track date) {
+    <span>{{ date | date: 'MMM d' }}</span>
+  }
+</div>

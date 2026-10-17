@@ -1,0 +1,17 @@
+<div class="ticker">
+  <span class="live">● Live markets</span>
+
+  <div class="track">
+    <ul class="items">
+      @for (item of loop(); track $index) {
+        <li>
+          <span class="pair">{{ item.pair }}</span>
+          {{ item.rate | number: '1.4-4' }}
+          <span [class]="item.change >= 0 ? 'up' : 'down'">
+            {{ item.change >= 0 ? '▲ +' : '▼ ' }}{{ item.change | number: '1.2-2' }}%
+          </span>
+        </li>
+      }
+    </ul>
+  </div>
+</div>

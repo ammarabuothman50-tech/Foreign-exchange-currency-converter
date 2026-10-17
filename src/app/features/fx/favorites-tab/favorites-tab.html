@@ -1,0 +1,20 @@
+@if (store.favorites().length) {
+  <ul class="list">
+    @for (pair of store.favorites(); track pair.base + pair.quote) {
+      <li>
+        <button type="button" class="pair" (click)="store.select(pair)">
+          {{ pair.base }}/{{ pair.quote }}
+          <span>{{ store.rateFor(pair.base, pair.quote) | number: '1.4-4' }}</span>
+        </button>
+        <app-button
+          label="Remove"
+          variant="danger"
+          [outlined]="true"
+          (click)="store.removeFavorite(pair)"
+        />
+      </li>
+    }
+  </ul>
+} @else {
+  <p class="empty">No favorites yet. Use the Favorite button to save a pair.</p>
+}

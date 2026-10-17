@@ -1,0 +1,51 @@
+<div class="toolbar">
+  <div class="stats">
+    @if (stats(); as s) {
+      <div class="stat">
+        <span>Open</span>
+        <strong>{{ s.open | number: '1.4-4' }}</strong>
+      </div>
+      <div class="stat">
+        <span>Last</span>
+        <strong>{{ s.last | number: '1.4-4' }}</strong>
+      </div>
+      <div class="stat">
+        <span>Change</span>
+        <strong [class]="s.change >= 0 ? 'up' : 'down'">
+          {{ s.change >= 0 ? '+' : '' }}{{ s.change | number: '1.4-4' }}
+        </strong>
+      </div>
+      <div class="stat">
+        <span>% Change</span>
+        <strong [class]="s.change >= 0 ? 'up' : 'down'">
+          {{ s.change >= 0 ? '▲ +' : '▼ ' }}{{ s.percent | number: '1.2-2' }}%
+        </strong>
+      </div>
+    }
+  </div>
+
+  <div class="ranges">
+    @for (option of ranges; track option) {
+      <button type="button" [class.active]="range() === option" (click)="range.set(option)">
+        {{ option }}
+      </button>
+    }
+  </div>
+</div>
+
+<section class="chart-card">
+  <header>
+    <h2>{{ store.base() }}/{{ store.quote() }}</h2>
+    @if (stats(); as s) {
+      <span>{{ s.last | number: '1.4-4' }} · {{ s.date | date: 'MMM d, y' }}</span>
+    }
+  </header>
+
+  @if (history.isLoading()) {
+    <p class="message">Loading...</p>
+  } @else if (history.error()) {
+    <p class="message">Could not load history.</p>
+  } @else if (history.value(); as points) {
+    <app-area-chart [points]="points" />
+  }
+</section>
