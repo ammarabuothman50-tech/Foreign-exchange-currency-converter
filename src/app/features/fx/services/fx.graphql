@@ -1,0 +1,13 @@
+query Currencies {
+  currencies {
+    code
+    name
+  }
+}
+
+query Latest {
+  latest {
+    quoteCurrency
+    quote
+  }
+}

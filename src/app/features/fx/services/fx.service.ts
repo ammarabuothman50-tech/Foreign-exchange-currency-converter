@@ -1,35 +1,20 @@
 import { inject, Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { map } from 'rxjs';
+import { CurrenciesGQL, LatestGQL } from './fx.generated';
 
 @Injectable({ providedIn: 'root' })
 export class FxService {
   private apollo = inject(Apollo);
+  private currenciesGql = inject(CurrenciesGQL);
+  private latestGql = inject(LatestGQL);
 
   getCurrencies() {
-    const query = gql`
-      query Currencies {
-        currencies {
-          code
-          name
-        }
-      }
-    `;
-
-    return this.apollo.query<any>({ query }).pipe(map((res) => res.data.currencies));
+    return this.currenciesGql.fetch().pipe(map((res) => res.data!.currencies));
   }
 
   getLatestRates() {
-    const query = gql`
-      query Latest {
-        latest {
-          quoteCurrency
-          quote
-        }
-      }
-    `;
-
-    return this.apollo.query<any>({ query }).pipe(map((res) => this.toRates(res.data.latest)));
+    return this.latestGql.fetch().pipe(map((res) => this.toRates(res.data!.latest)));
   }
 
   getHistory(base: string, quote: string, range: string) {
