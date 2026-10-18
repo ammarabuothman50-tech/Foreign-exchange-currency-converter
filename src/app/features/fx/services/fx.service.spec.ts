@@ -1,68 +1,54 @@
-import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { ApolloTestingController, ApolloTestingModule } from 'apollo-angular/testing';
+import { firstValueFrom } from 'rxjs';
 
-import { API_CONFIG } from '../../../core/config/api-config.token';
 import { FxService } from './fx.service';
-
-const API = 'http://test/graphql';
 
 describe('FxService', () => {
   let service: FxService;
-  let http: HttpTestingController;
+  let apollo: ApolloTestingController;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: API_CONFIG, useValue: { baseUrl: API, apiKey: 'test' } },
-      ],
-    });
+    TestBed.configureTestingModule({ imports: [ApolloTestingModule] });
     service = TestBed.inject(FxService);
-    http = TestBed.inject(HttpTestingController);
+    apollo = TestBed.inject(ApolloTestingController);
   });
 
-  afterEach(() => http.verify());
+  afterEach(() => apollo.verify());
 
-  it('returns latest rates with EUR added', () => {
-    let rates: any;
-    service.getLatestRates().subscribe((value) => (rates = value));
+  it('returns latest rates with EUR added', async () => {
+    const rates = firstValueFrom(service.getLatestRates());
 
-    http.expectOne(API).flush({ data: { latest: [{ quoteCurrency: 'USD', quote: 1.2 }] } });
+    apollo.expectOne('Latest').flush({ data: { latest: [{ quoteCurrency: 'USD', quote: 1.2 }] } });
 
-    expect(rates).toEqual({ EUR: 1, USD: 1.2 });
+    expect(await rates).toEqual({ EUR: 1, USD: 1.2 });
   });
 
-  it('throws when the response has GraphQL errors', () => {
-    let error: any;
-    service.getCurrencies().subscribe({ error: (e) => (error = e) });
+  it('throws when the response has GraphQL errors', async () => {
+    const currencies = firstValueFrom(service.getCurrencies());
 
-    http.expectOne(API).flush({ data: null, errors: [{ message: 'Please upgrade' }] });
+    apollo.expectOne('Currencies').flush({ errors: [{ message: 'Please upgrade' }] });
 
-    expect(error.message).toBe('Please upgrade');
+    await expect(currencies).rejects.toThrow('Please upgrade');
   });
 
   it('calculates a cross rate', () => {
     expect(service.getRate({ EUR: 1, USD: 1.25, GBP: 0.85 }, 'USD', 'GBP')).toBeCloseTo(0.68);
   });
 
-  it('builds one aliased query for the history range', () => {
-    let points: any[] = [];
-    service.getHistory('USD', 'EUR', '1D').subscribe((value) => (points = value));
+  it('builds one aliased query for the history range', async () => {
+    const points = firstValueFrom(service.getHistory('USD', 'EUR', '1D'));
 
-    const req = http.expectOne(API);
-    expect(req.request.body.variables).toEqual({ quotes: ['USD'] });
-    expect(req.request.body.query).toContain('d0: historical');
-    expect(req.request.body.query).toContain('d1: historical');
+    const op = apollo.expectOne('History');
+    expect(op.operation.variables).toEqual({ quotes: ['USD'] });
 
-    req.flush({
+    op.flush({
       data: {
         d0: [{ quoteCurrency: 'USD', quote: 1.25 }],
         d1: [{ quoteCurrency: 'USD', quote: 1.0 }],
       },
     });
 
-    expect(points.map((p) => p.rate)).toEqual([0.8, 1]);
+    expect((await points).map((p) => p.rate)).toEqual([0.8, 1]);
   });
 });

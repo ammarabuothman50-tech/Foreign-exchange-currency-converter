@@ -1,17 +1,14 @@
-import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { Apollo, gql } from 'apollo-angular';
 import { map } from 'rxjs';
-
-import { API_CONFIG } from '../../../core/config/api-config.token';
 
 @Injectable({ providedIn: 'root' })
 export class FxService {
-  private http = inject(HttpClient);
-  private url = inject(API_CONFIG).baseUrl;
+  private apollo = inject(Apollo);
 
   getCurrencies() {
-    const query = `
-      query {
+    const query = gql`
+      query Currencies {
         currencies {
           code
           name
@@ -19,17 +16,12 @@ export class FxService {
       }
     `;
 
-    return this.http.post<any>(this.url, { query }).pipe(
-      map((res) => {
-        if (res.errors) throw new Error(res.errors[0].message);
-        return res.data.currencies;
-      }),
-    );
+    return this.apollo.query<any>({ query }).pipe(map((res) => res.data.currencies));
   }
 
   getLatestRates() {
-    const query = `
-      query {
+    const query = gql`
+      query Latest {
         latest {
           quoteCurrency
           quote
@@ -37,12 +29,7 @@ export class FxService {
       }
     `;
 
-    return this.http.post<any>(this.url, { query }).pipe(
-      map((res) => {
-        if (res.errors) throw new Error(res.errors[0].message);
-        return this.toRates(res.data.latest);
-      }),
-    );
+    return this.apollo.query<any>({ query }).pipe(map((res) => this.toRates(res.data.latest)));
   }
 
   getHistory(base: string, quote: string, range: string) {
@@ -59,20 +46,19 @@ export class FxService {
       `;
     });
 
-    const query = `
+    const query = gql`
       query History($quotes: [String!]) {
         ${fields}
       }
     `;
 
-    return this.http.post<any>(this.url, { query, variables: { quotes } }).pipe(
-      map((res) => {
-        if (res.errors) throw new Error(res.errors[0].message);
-        return dates.map((date, i) => ({
+    return this.apollo.query<any, any>({ query, variables: { quotes } }).pipe(
+      map((res) =>
+        dates.map((date, i) => ({
           date,
           rate: this.getRate(this.toRates(res.data['d' + i]), base, quote),
-        }));
-      }),
+        })),
+      ),
     );
   }
 
